@@ -1,0 +1,46 @@
+using System;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+
+class taskVeeam
+{
+    static void Main(string[] args)
+    {
+        // Define the input parameters and expected result
+        string department = "Research & Development";
+        string language = "English";
+        int expectedJobCount = 10;
+
+        // Initialize Chrome WebDriver and open the URL
+        IWebDriver driver = new ChromeDriver();
+        driver.Navigate().GoToUrl("https://cz.careers.veeam.com/vacancies");
+        driver.Manage().Window.Maximize();
+
+        // Choose the department and language
+        IWebElement departmentDropdown = driver.FindElement(By.XPath("//div[@id='filter-item-department']"));
+        departmentDropdown.Click();
+        IWebElement departmentOption = departmentDropdown.FindElement(By.XPath($"//div[@class='scrollable__item'][contains(text(),'{department}')]"));
+        departmentOption.Click();
+
+        IWebElement languageDropdown = driver.FindElement(By.XPath("//div[@id='filter-item-language']"));
+        languageDropdown.Click();
+        IWebElement languageOption = languageDropdown.FindElement(By.XPath($"//div[@class='scrollable__item'][contains(text(),'{language}')]"));
+        languageOption.Click();
+
+        // Count the number of jobs found and compare with expected result
+        var jobs = driver.FindElements(By.XPath("//div[@class='vacancies__item']"));
+        int jobCount = jobs.Count;
+
+        if (jobCount == expectedJobCount)
+        {
+            Console.WriteLine($"Success: {jobCount} jobs found!");
+        }
+        else
+        {
+            Console.WriteLine($"Error: Expected {expectedJobCount} jobs, but found {jobCount} jobs.");
+        }
+
+        // Quit the browser
+        driver.Quit();
+    }
+}
